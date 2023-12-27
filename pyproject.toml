@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "fon-autobet"
+version = "0.1.0"
+description = ""
+authors = ["roman <aasnovroma@gmail.com>"]
+readme = "README.md"
+packages = [{include = "fon_autobet"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
