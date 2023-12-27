@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "fon_autobet"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 
 
 [build-system]
