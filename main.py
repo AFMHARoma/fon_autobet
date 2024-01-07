@@ -1,8 +1,10 @@
+import json
 import platform
 import re
 import sys
 import time
 
+import pika
 import selenium.common.exceptions
 import selenium.webdriver as wd
 from bs4 import BeautifulSoup
@@ -130,8 +132,25 @@ class BetMachine:
 
 
 def main():
-    bm = BetMachine()
-    bm.do_bet({'team1': 'Purple haze', 'team2': 'Gameinside', 'map': 1, 'winner_ind': 0})
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='212.60.20.180', credentials=pika.PlainCredentials('postgres', '3PuK7UCROjiD')))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange='fonbet', exchange_type='topic')
+
+    result = channel.queue_declare(queue='', exclusive=True)
+    queue_name = result.method.queue
+
+    channel.queue_bind(exchange='fonbet', queue=queue_name)
+
+    def callback(ch, method, properties, body):
+        print(f'Cons1: {body}')
+        BetMachine().do_bet(match_data=json.loads(body))
+
+    channel.basic_consume(
+        queue=queue_name, on_message_callback=callback, auto_ack=True)
+
+    channel.start_consuming()
 
 
 if __name__ == '__main__':
